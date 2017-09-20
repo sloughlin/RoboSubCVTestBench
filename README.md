@@ -1,5 +1,7 @@
 CV Boilerplate Test Code
 ========================
+[![Video Ovewview of this github](https://img.youtube.com/vi/4Iy04A7LdbQ/0.jpg)](https://www.youtube.com/watch?v=4Iy04A7LdbQ)
+
 The CV boilerplate test code is broken down into several parts.
 
 There are test videos that can be downloaded by a utility script.  As of the current commmit there is only 1 test video which shows a sub approaching a single red buoy.
