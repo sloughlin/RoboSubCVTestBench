@@ -57,6 +57,8 @@ class CVModule:
 
   def __init__(self, args):
 
+    self.meta = []
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--neural-net-model')
     parser.add_argument('--neural-net-weights')
@@ -205,6 +207,9 @@ class CVModule:
             fl.remove(f2)
     return fl2
 
+  def get_meta(self):
+    return self.meta
+
   def output_dimensions(self):
     return (480*2,360)
 
@@ -296,6 +301,18 @@ class CVModule:
       self.input_img_buffer.pop(0)
       feature_set = self.remove_similar(self.feature_list[0], 0.5, 30)
       self.draw_debug_features(feature_set, self.input_img_buffer[0])
+
+      buoy_detection = None
+      if len(feature_set) > 0:
+        feature = feature_set[0]
+        buoy_detection = {"pos":(int(feature.pt[0]), int(feature.pt[1])), "rad":int(feature.size/2)}
+
+      if buoy_detection is not None:
+        self.meta.append({"RedBuoy":buoy_detection})
+      else:
+        self.meta.append({})
+
+
       img, im_out = self.input_img_buffer[0], self.edge_detect_img_buffer[0]
 
     # Show the processed image for debugging
