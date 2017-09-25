@@ -4,7 +4,7 @@ CV Boilerplate Test Code
 
 The CV boilerplate test code is broken down into several parts.
 
-There are test videos that can be downloaded by a utility script.  As of the current commmit there is only 1 test video which shows a sub approaching a single red buoy.
+There are test videos that can be downloaded by a utility script.  All of our competition videos have been compressed at maximum quality as MP4's in the test_videos/bag folder.  There is also one video from you tube of a subs run at a lone red buoy.
 
 To download the test videos run util/download_test_videos.py
 
@@ -16,6 +16,12 @@ This is the path to the input video to your CV code
 --test-video=&lt;supply the path to your test video here&gt;
 If you want to generate an output video instead of just clicking through the results use this parameter
 --output-video=&lt;supply the path to your output video here&gt;
+If you want to draw the associated meta data of the video over your debug image you can specifiy --meta-overlay
+If you want to have your algorithm scored against associated meta data specify --score
+To select a metadata file to use:
+--test-metadata=&lt;supply the path to your video metadata here&gt;
+
+Remember you can specify your own parameters and decode them in the __init__ of your CVClass if you want to give tunable parameters to your code.
 
 In src/demos/empty_cv_test there is the script test.py, this is an example script you can add code into the section labled #### CV CODE HERE and do operations on the input image from the video.  You can then draw over the image any debug information or detections of buoys and return a debug image showing what your code is seeing/thinking.
 
@@ -25,17 +31,24 @@ output_dimensions(), this returns the size of your debug image, in case you want
 
 If you run this code with no change you will simply see the video shown frame by frame.  Pressing a key will advance to the next frame.
 
-python2.7 src/test_cv.py --test-script=src/demos/empty_cv_test/test.py --test-video=test_videos/buoy/1/1.mp4
+python2.7 src/framework/test_cv.py --test-script=src/demos/empty_cv_test/test.py --test-video=test_videos/buoy/1/1.mp4
 
 At the bare minimum to run the code you will need python2 python-opencv and python-numpy.  It was tested in an ubuntu enviorment and since Linux runs on the sub it is the best OS to do your CV code on.
 
 If you need any help just post errors or whatever your confused about in the Computer Vision slack.
 
+Meta Data Generator
+===================
+There is a Metadata generator that can be used to manualy draw featuers over the video and save them in a JSON file.  This JSON file can be used to score the accuracy of your CV code.  It works by comparing the orientation, location, and size of the detected features to those in the meta data and providing various error metrics as textual outputs.  Here is how you could run it to generate metadata for one of the videos:
+python2.7 src/framework/meta_data_generator.py --test-video=test_videos/buoy/1/1.mp4 --output-data=test_videos/buoy/1/1.json
+
+Right now it only supports the RedBuoy.  The menu on the right lets you select a tool, you can pan/zoom the image so you can more accuratly draw over features, and select one of the feature types to draw that feature to the image.  To navigate the video use the left and right arrow keys to change frames.  The s key will save the current state of the metadata as well as exiting the program.
+
 Hough Circles Demo
 ==================
 The hough circles demo is about as simple as it gets for doing a buoy detection.  In buoy test video 1 the only thing that really appears in the video is the red buoy so it is able to identify its circular shape, however it has many false positives when tried on other test videos but it is a good starting point to see how to make open cv do something and get back a debug image.
 
-python2.7 src/test_cv.py --test-script=src/demos/buoy/hough/hough.py --test-video=test_videos/buoy/1/1.mp4
+python2.7 src/framework/test_cv.py --test-script=src/demos/buoy/hough/hough.py --test-video=test_videos/buoy/1/1.mp4
 
 Suggested Things To Try
 ====================
@@ -62,7 +75,7 @@ It is designed by cascading several CV techniques.  First, it uses edge detectio
 If you want to run my cv test you will also need the demo_data which can be obtained with util/download_demo_data.py
 
 To execute it and see the output frame by frame you can run this command from the repositorys root directory:
-python2.7 src/test_cv.py --test-script=src/demos/buoy/dryerzinia/dryerzinia_buoy.py --test-video=test_videos/buoy/1/1.mp4 --neural-net-model=demo_data/buoy/dryerzinia/buoy_feature_model.json --neural-net-weights=demo_data/buoy/dryerzinia/buoy_feature_model.h5
+python2.7 src/framework/test_cv.py --test-script=src/demos/buoy/dryerzinia/dryerzinia_buoy.py --test-video=test_videos/buoy/1/1.mp4 --neural-net-model=demo_data/buoy/dryerzinia/buoy_feature_model.json --neural-net-weights=demo_data/buoy/dryerzinia/buoy_feature_model.h5
 
 You will need to have python-opencv, python-numpy, keras and one of keras's back ends installed.
 

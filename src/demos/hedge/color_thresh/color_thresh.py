@@ -27,7 +27,8 @@ class CVModule:
 
   def sphr_thresh(self, img, center):
     #(b-0)^2 + (g-255)^2 + (r-255)^2 < (255/2)^2
-    return (img[:,:,0])**2 + (img[:,:,1]-255.0)**2 + (img[:,:,2]-255.0)**2 < (255.0/4.0)**2
+    img = img.astype(float)
+    return (2.0*(img[:,:,0])**2 + 0.25*(img[:,:,1]-255.0)**2 + 0.25*(img[:,:,2]-255.0)**2) < ((255.0/2.0)**2)
 
   def deblue(self, img):
     img[:,:,1] = img[:,:,1]*0.8
@@ -42,11 +43,13 @@ class CVModule:
     img = cv2.resize(img, self.image_dimensions)
 
     img_deblue = self.deblue(img.copy())
-    #img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    matched_yellow = self.sphr_thresh(img, [0,255,255])
+    img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    img_edges = cv2.Canny(img, 25, 200, apertureSize=3)
+    matched_yellow = self.thresh(img_hsv, [40,80,150],[70,130,200])
+    #matched_yellow = self.sphr_thresh(img_deblue, [0,255,255])
     #matched_white = self.thresh(img, [180,180,160],[255,255,255])
 
-    img[numpy.invert(matched_yellow)] = img[numpy.invert(matched_yellow)]/4
+    #img[numpy.invert(matched_yellow)] = img[numpy.invert(matched_yellow)]/4
 
     img_match = img.copy()
     img_match[matched_yellow] = 255
@@ -56,7 +59,7 @@ class CVModule:
     #im2, contours, hierarchy = cv2.findContours(img_match,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     #cv2.drawContours(img, contours, -1, (0,255,0), 3)
 
-    lines = cv2.HoughLinesP(img_match,1,numpy.pi/180,100,50,10)
+    lines = cv2.HoughLinesP(img_edges,1,numpy.pi/180,100,50,10)
     if lines is not None:
       for x1,y1,x2,y2 in lines[0]:
         cv2.line(img,(x1,y1),(x2,y2),(0,255,0),2)
