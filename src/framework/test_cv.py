@@ -31,7 +31,7 @@ def main(sys_args):
   if args.output_video is not None:
     debug_video = True
     cap = cv2.VideoCapture(0)
-    fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+    fourcc = 0x00000020#cv2.VideoWriter_fourcc(*'MP4V')
     out = cv2.VideoWriter(args.output_video,fourcc, 30.0, cv_test.output_dimensions())
 
   if args.score:
@@ -53,6 +53,9 @@ def main(sys_args):
     # publish frames to a topic instead of showing debug images
     if debug_video:
       # write debug image to file
+      dim = cv_test.output_dimensions()
+      if debug_image.shape != (dim[1], dim[0], 3):
+        raise Exception("Your debug image does not match the value of output_dimensions or is not BGR (greyscale?) please fix if you want debug video")
       out.write(debug_image)
     elif args.score:
       pass
