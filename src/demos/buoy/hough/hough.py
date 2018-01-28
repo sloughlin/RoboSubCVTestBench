@@ -24,7 +24,7 @@ class CVModule:
     img = cv2.resize(img, self.image_dimensions)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     im_out = cv2.GaussianBlur(img, (5, 5), 0)
-    circles = cv2.HoughCircles(im_out, cv2.HOUGH_GRADIENT, dp=1, minDist=im_out.shape[0]/8, param1=50.0, param2=25.0, minRadius=0, maxRadius=0)
+    circles = cv2.HoughCircles(im_out, cv2.HOUGH_GRADIENT, dp=1, minDist=im_out.shape[0]/4, param1=50.0, param2=25.0, minRadius=im_out.shape[0]/16, maxRadius=0)
     # Potential additional tuning parameters:
     #, param1=50, param2=30, minRadius=0, maxRadius=0)
 
