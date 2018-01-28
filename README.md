@@ -79,4 +79,7 @@ python2.7 src/framework/test_cv.py --test-script=src/demos/buoy/dryerzinia/dryer
 
 You will need to have python-opencv, python-numpy, keras and one of keras's back ends installed.
 
+Simple Dice Feature Detectors
+=============================
+My scripts for detecting dice can be found in /src/demos/dice and run with a -i or --image option pointing to one of the test images in /test_videos/dice, or any other images. They technically function correctly but need a lot of cleanup.
 
