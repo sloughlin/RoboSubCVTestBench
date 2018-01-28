@@ -30,7 +30,15 @@ def find_circles(img, cnt):
     # cv2.waitKey(0)
     circles = cv2.HoughCircles(squareimg, cv2.HOUGH_GRADIENT, dp=1, minDist=squareimg.shape[0]/2, param1=50.0, param2=25.0, minRadius=0, maxRadius=0)
     # move circles to correct places in original image
-    print(cnt, circles)
+    if circles is not None:
+        for i in range(len(circles)):
+            if circles[i] is not None:
+                for j in range(len(circles[i])):
+                    #Add x coord of top left corner of square to x coord of circle center
+                    circles[i][j][0] += cnt[0][0]
+                    #Add y coord of top left corner of square to y coord of circle center
+                    circles[i][j][1] += cnt[0][1]
+    #print(circles)
     # if circles is not None:
     #     for i in circles[0, :]:
     #         #print i
