@@ -28,7 +28,7 @@ def find_circles(img, cnt):
     squareimg = img[int(cnt[0][1]):int(cnt[2][1]), int(cnt[0][0]):int(cnt[2][0])]
     # cv2.imshow("square", squareimg)
     # cv2.waitKey(0)
-    circles = cv2.HoughCircles(squareimg, cv2.HOUGH_GRADIENT, dp=1, minDist=squareimg.shape[0]/2, param1=50.0, param2=25.0, minRadius=0, maxRadius=0)
+    circles = cv2.HoughCircles(squareimg, cv2.HOUGH_GRADIENT, dp=1, minDist=squareimg.shape[0]/2, param1=50.0, param2=25.0, minRadius=0, maxRadius=squareimg.shape[0]/4)
     # move circles to correct places in original image
     if circles is not None:
         for i in range(len(circles)):
@@ -74,6 +74,7 @@ def find_squares(img):
                         #shitty way to not get a box w the whole image
                         break;
                     max_cos = np.max([angle_cos( cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in xrange(4)])
+                    print(cnt, max_cos)
                     if max_cos < 0.1:
                         squares.append(cnt)
                         # print(cnt)
@@ -81,6 +82,7 @@ def find_squares(img):
                         c = find_circles(bin, cnt)
                         if c is not None:
                             circles.append(c)
+                    #else handle parallelograms
 
     return squares, circles
 
@@ -106,7 +108,7 @@ if __name__ == '__main__':
                                 cv2.circle(img, (curr[0], curr[1]), curr[2], (0, 255, 0), 2)
                                 cv2.circle(img, (curr[0], curr[1]), 2, (0, 0, 255), 3)
                                 #cv2.putText(img, str(numcircles), (curr[0],curr[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-        print(len(squares))
+        print(len(circles))
         cv2.imshow('squares', img)
         ch = cv2.waitKey()
         if ch == 27:
